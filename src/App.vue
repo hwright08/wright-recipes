@@ -1,32 +1,38 @@
+<style>
+.v-card__text {
+  font-size: 16px !important;
+}
+</style>
+
+
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <v-app dark>
+      <v-main>
+        <v-app-bar>
+          <v-icon class="mr-2">mdi-book-open-variant</v-icon>
+          <v-btn tile text to="/" style="height: 100%;">Recipes</v-btn>
+          <!-- <v-btn tile text to="/calendar" style="height: 100%;">Calendar</v-btn> -->
+        </v-app-bar>
+
+        <v-container>
+          <router-view/>
+        </v-container>
+      </v-main>
+    </v-app>
   </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+// import { mapActions } from 'vuex';
 
-#nav {
-  padding: 30px;
-}
+export default {
+  // created() {
+  //   this.getAllRecipes();
+  // },
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+  // methods: {
+  //   ...mapActions(['getAllRecipes'])
+  // }
+};
+</script>
