@@ -11,6 +11,7 @@
         <v-col class="pa-0">
           <span style="word-break: break-word;">{{ recipeDetails.title }}</span>
         </v-col>
+        <v-btn class="mr-2" @click="open">Add to Calendar</v-btn>
         <v-btn :to="`/form/${this.id}`">
           <v-icon left>mdi-pencil</v-icon>
           Edit
@@ -74,6 +75,26 @@
       </v-card>
     </v-col>
   </v-row>
+
+  <v-dialog :value="showDialog" persistent width="350px">
+    <v-card>
+      <v-card-title>Select Date</v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="date"
+          type="date"
+          dense
+          outlined
+        ></v-text-field>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn @click="showDialog = false">Cancel</v-btn>
+        <v-btn :disabled="!date" @click="save">Save</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </div>
 </template>
 
@@ -90,7 +111,9 @@ export default {
   filters: { time },
 
   data: () => ({
-    id: 0
+    id: 0,
+    showDialog: false,
+    date: ''
   }),
 
   computed: {
@@ -98,7 +121,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['getRecipeDetails', 'toggleFavorite']),
+    ...mapActions(['getRecipeDetails', 'toggleFavorite', 'addMeal']),
 
     async toggle() {
       if (!this.id) return;
@@ -106,6 +129,19 @@ export default {
       let { favorite } = this.recipeDetails;
       await this.toggleFavorite({ id: this.id, favorite: !favorite });
       this.getRecipeDetails(this.id);
+    },
+
+    open() {
+      this.date = '';
+      this.showDialog = true;
+    },
+
+    save() {
+      this.addMeal({
+        date: this.date,
+        recipe_id: this.id
+      });
+      this.showDialog = false;
     }
   }
 };

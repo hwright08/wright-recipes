@@ -46,7 +46,7 @@
                 <v-row>
                   <v-col>
                     <span class="font-weight-bold">Total Time:</span>
-                    {{ r.prep_time + r.cook_time | time }}
+                    {{ (r.prep_time + r.cook_time) | time }}
                   </v-col>
                   <v-col class="text-right">
                     <span class="font-weight-bold">Servings:</span>

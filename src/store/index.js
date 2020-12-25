@@ -13,6 +13,7 @@ export default new Vuex.Store({
     groups: [],
     units: [],
     ingredients: [],
+    meals: []
   },
 
   mutations: {
@@ -34,13 +35,25 @@ export default new Vuex.Store({
 
     getUnits(state, units) {
       state.units = units;
+    },
+
+    getMeals(state, meals) {
+      state.meals = meals;
     }
   },
 
   actions: {
     async getAllRecipes({ commit }) {
       const { docs } = await db.collection('recipe').get();
-      const recipes = docs.map(doc => ({ id: doc.id, ...doc.data() }) );
+      const recipes = docs.map(doc => {
+        let data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          cook_time: parseInt(data.cook_time),
+          prep_time: parseInt(data.prep_time)
+        }
+      });
       commit('getAllRecipes', recipes);
     },
 
@@ -95,19 +108,39 @@ export default new Vuex.Store({
       commit('getExistingIngredients', ingredients);
       commit('getUnits', units);
     },
+
+    async getMeals({ commit }) {
+      const { docs } = await db.collection('meal').get();
+      let meals = docs.map(async doc => {
+        let r = await doc.data().recipe_ref.get();
+        return {
+          id: doc.id,
+          recipe_id: r.id,
+          name: r.data().title,
+          desc: r.data().description,
+          start: doc.data().date
+        }
+      });
+      await Promise.all(meals).then(vals => commit('getMeals', vals));
+    },
+
+    async deleteMeal(context, meal_id) {
+      let ref = await db.collection('meal').doc(meal_id);
+      ref.delete();
+    },
+
+    async addMeal(context, data) {
+      if (!data.date || !data.recipe_id) return;
+      let recipeRef = await db.collection('recipe').doc(data.recipe_id);
+      let ref = await db.collection('meal').doc();
+      ref.set({
+        date: data.date,
+        recipe_ref: recipeRef
+      });
+    }
   },
 
   getters: {
-    existingIngredients: state => {
-      let ings = state.recipes.reduce((ing, recipe) => {
-        recipe.ingredients.forEach(i => {
-          if (!ing.includes(i.item)) ing.push(i.item);
-        });
-        return ing;
-      }, []);
-      return ings;
-    },
-
     recipesByGroup: state => group => {
       return state.recipes.filter(val => val.category == group);
     }

@@ -12,7 +12,7 @@
         <v-app-bar>
           <v-icon class="mr-2">mdi-book-open-variant</v-icon>
           <v-btn tile text to="/" style="height: 100%;">Recipes</v-btn>
-          <!-- <v-btn tile text to="/calendar" style="height: 100%;">Calendar</v-btn> -->
+          <v-btn tile text to="/calendar" style="height: 100%;">Calendar</v-btn>
         </v-app-bar>
 
         <v-container>
@@ -22,17 +22,3 @@
     </v-app>
   </div>
 </template>
-
-<script>
-// import { mapActions } from 'vuex';
-
-export default {
-  // created() {
-  //   this.getAllRecipes();
-  // },
-
-  // methods: {
-  //   ...mapActions(['getAllRecipes'])
-  // }
-};
-</script>
