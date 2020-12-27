@@ -75,6 +75,7 @@
           :rules="[required]"
           :rows="2"
           outlined
+          auto-grow
           dense
         ></v-textarea>
 
@@ -326,7 +327,14 @@ export default {
         }
       }
 
-      this.showDialog = false;
+      this.direction = { text: '', index: null };
+      this.note = { text: '', index: null };
+      this.ingredient = {
+        index: null,
+        item: '',
+        amount: '',
+        unit: '',
+      };
     },
 
     async saveRecipe() {
