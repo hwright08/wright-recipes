@@ -53,7 +53,7 @@ export default new Vuex.Store({
           cook_time: parseInt(data.cook_time),
           prep_time: parseInt(data.prep_time)
         }
-      });
+      }).sort((a,b) => a.title <= b.title ? -1 : 1);
       commit('getAllRecipes', recipes);
     },
 
@@ -137,6 +137,26 @@ export default new Vuex.Store({
         date: data.date,
         recipe_ref: recipeRef
       });
+    },
+
+    async getGroceries(context, { startDate, endDate }) {
+      const ref = db.collection('meal');
+      const ref1 = ref.where('date', '>=', startDate);
+      const ref2 = ref1.where('date', '<=', endDate);
+      let d = await ref2.get();
+      let data = d.docs.map(async val => {
+        let mealData = val.data();
+        let r = await val.data().recipe_ref.get();
+        let { title, ingredients, serving_size } = r.data();
+        return {
+          date: mealData.date,
+          title,
+          ingredients,
+          serving_size
+        }
+      });
+
+      return await Promise.all(data);
     }
   },
 
